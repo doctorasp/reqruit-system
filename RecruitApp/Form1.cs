@@ -1,10 +1,8 @@
 ﻿using PersonalApp;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 namespace RecruitApp
@@ -179,7 +177,17 @@ namespace RecruitApp
             string phone = this.textBox2.Text;
             string city = this.textBox3.Text;
             int id_v = (int)this.comboBox1.SelectedValue;
-            decimal target_price = Convert.ToDecimal(this.textBox8.Text);
+            decimal target_price=0;
+
+            if (!String.IsNullOrEmpty(this.textBox8.Text))
+            {
+                target_price = Convert.ToDecimal(this.textBox8.Text);
+            }
+            else
+            {
+                MessageBox.Show("Введіть очікуваний оклад");
+                return;
+            }
 
             DialogResult result = MessageBox.Show("Створити нового найманця?", "Confirmation", MessageBoxButtons.YesNoCancel);
 
@@ -295,6 +303,7 @@ namespace RecruitApp
             bs.DataSource = this.dataGridView1.DataSource;
             bs.Filter = "ПІП like '%" + this.richTextBox1.Text + "%'";
             this.dataGridView1.DataSource = bs;
+            drawRows();
         }
 
         private void richTextBox1_Enter(object sender, EventArgs e)
@@ -305,6 +314,9 @@ namespace RecruitApp
         private void richTextBox1_Leave(object sender, EventArgs e)
         {
             this.richTextBox1.Text = "Пошук";
+            mainTable();
+            drawRows();
+
         }
 
         private void button10_Click(object sender, EventArgs e)
@@ -469,6 +481,36 @@ namespace RecruitApp
         private void button11_Click(object sender, EventArgs e)
         {
             this.tabControl1.SelectedTab = this.tabPage2;
+        }
+
+        private void checkBox9_Click(object sender, EventArgs e)
+        {
+            if (this.checkBox9.Checked)
+            {
+
+                this.dataGridView1.DataSource = _context.GetQuery("SELECT person.id AS 'ID', fio AS 'ПІП', phone AS 'Телефон', city AS 'Місто', vacancy.name AS 'Вакансія', target_price AS 'Очікувана ЗП, $', vacancy.price AS 'Оклад на позиції', priceK AS 'ЗПК', score AS 'K вмінь', s.sum_c AS 'Стаж, р.' FROM person LEFT JOIN (SELECT id_person, sum(Floor(DATEDIFF(date_end, date_start))/365) sum_c FROM experience GROUP BY experience.id_person) s ON person.id = s.id_person LEFT JOIN vacancy ON person.id_vacancy = vacancy.id INNER JOIN rating ON person.id = rating.id_person ORDER BY rating.score DESC ");
+                drawRows();
+            }
+            else
+            {
+                mainTable();
+                drawRows();
+            }
+        }
+
+        private void checkBox11_Click(object sender, EventArgs e)
+        {
+            if (this.checkBox11.Checked)
+            {
+
+                this.dataGridView1.DataSource = _context.GetQuery("SELECT person.id AS 'ID', fio AS 'ПІП', phone AS 'Телефон', city AS 'Місто', vacancy.name AS 'Вакансія', target_price AS 'Очікувана ЗП, $', vacancy.price AS 'Оклад на позиції', priceK AS 'ЗПК', score AS 'K вмінь', s.sum_c AS 'Стаж, р.' FROM person LEFT JOIN (SELECT id_person, sum(Floor(DATEDIFF(date_end, date_start))/365) sum_c FROM experience GROUP BY experience.id_person) s ON person.id = s.id_person LEFT JOIN vacancy ON person.id_vacancy = vacancy.id INNER JOIN rating ON person.id = rating.id_person ORDER BY rating.priceK DESC ");
+                drawRows();
+            }
+            else
+            {
+                mainTable();
+                drawRows();
+            }
         }
     }
 }
