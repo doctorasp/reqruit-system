@@ -260,13 +260,13 @@ namespace RecruitApp
             if (checkBox6.Checked)
             {
                 c++;
-                dic.Add(checkBox6.Text, "");
+                dic.Add(checkBox6.Text, comboBox7.SelectedItem.ToString());
             }
 
             if (checkBox7.Checked)
             {
                 c++;
-                dic.Add(checkBox7.Text, "");
+                dic.Add(checkBox7.Text, comboBox8.SelectedItem.ToString());
             }
 
             qualityK = (decimal)countSkills / (decimal)c;
@@ -510,6 +510,30 @@ namespace RecruitApp
             {
                 mainTable();
                 drawRows();
+            }
+        }
+
+        private void checkBox6_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.checkBox6.Checked)
+            {
+                this.comboBox7.Enabled = true;
+            }
+            else
+            {
+                this.comboBox7.Enabled = false;
+            }
+        }
+
+        private void checkBox7_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.checkBox7.Checked)
+            {
+                this.comboBox8.Enabled = true;
+            }
+            else
+            {
+                this.comboBox8.Enabled = false;
             }
         }
     }
